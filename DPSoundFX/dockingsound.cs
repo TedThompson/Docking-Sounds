@@ -1,7 +1,7 @@
 //*******************************
 // Title: DPSoundFX
 // Author: Ted Thompson
-// License: CC BY-SA 4.0
+// License: GNU GPL v3
 // Created: June 19, 2015
 //*******************************
 using System;

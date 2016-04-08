@@ -1,8 +1,7 @@
-﻿<Properties>
+﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="DPSoundFX\AssemblyInfo.cs">
     <Files>
-      <File FileName="DPSoundFX\dockingsound.cs" Line="27" Column="19" />
       <File FileName="DPSoundFX\AssemblyInfo.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
