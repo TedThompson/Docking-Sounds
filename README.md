@@ -38,7 +38,14 @@ Just listen, when docking or undocking of course!!
 
 ## Contributors
 
-All the great and patient MOD coders on the KSP forums, unfortunately I no longer recall exactly who helped me out.
+Guru's who answered my questions:
+
+- Snjo
+- CrzyRndm
+
+Authors whose plugins were studied for clues and code:
+
+- Pizzaoverhead
 
 ## License
 
