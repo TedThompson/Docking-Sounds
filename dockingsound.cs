@@ -92,7 +92,7 @@ namespace DockingSounds
 		
 		public override void OnStart (PartModule.StartState state)
 		{
-			Debug.Log ("[DPSoundFX] OnStart Called: State is " + state);
+			Debug.Log ("[DPSoundFX] OnStart Called: State was " + state);
 			
 			if (HighLogic.LoadedScene != GameScenes.FLIGHT)
 				return;
