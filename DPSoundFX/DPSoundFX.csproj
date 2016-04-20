@@ -12,6 +12,7 @@
     <ReleaseVersion>1.2</ReleaseVersion>
     <SynchReleaseVersion>False</SynchReleaseVersion>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Description>KSP Plugin to add sound effects to Docking and Undocking events</Description>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -30,6 +31,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="xcopy /Y &quot;bin\${ProjectConfigName}\${ProjectName}.dll&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program\GameData\FP_DPSoundFX\Plugins\&quot;" workingdir="${ProjectDir}" externalConsole="True" pauseExternalConsole="True" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

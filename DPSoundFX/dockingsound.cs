@@ -4,11 +4,8 @@
 // License: GNU GPL v3
 // Created: June 19, 2015
 //*******************************
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
+using System.Linq;
 
 namespace DockingSounds
 {
