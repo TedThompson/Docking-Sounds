@@ -1,8 +1,10 @@
 2016-04-19  Ted Thompson  <ted@federalproductions.com>
 
-	* KSP_Plugins.userprefs: 
+	* dockingsound.cs:
+	* AssemblyInfo.cs:
+	* DPSoundFX.csproj: 
 
 2016-04-07  Ted Thompson  <ted@federalproductions.com>
 
-	* KSP_Plugins.userprefs: 
+	* dockingsound.cs: 
 
