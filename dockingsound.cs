@@ -17,15 +17,15 @@ namespace DockingSounds
 		public string sound_undocking = "FP_DPSoundFX/Sounds/undock";
 		[KSPField]
 		public bool internalSoundsOnly = false;
-		public FXGroup dockSound = null;
-		public FXGroup undockSound = null;
+		public FXGroup DockSound = null;
+		public FXGroup UndockSound = null;
 		
 		//Create FX group for sounds
-		public bool createGroup (FXGroup group, string name, bool loop)
+		public bool CreateGroup (FXGroup group, string filename, bool loop)
 		{
 			if (name != string.Empty) {
-				if (!GameDatabase.Instance.ExistsAudioClip (name)) {
-					Debug.LogError ("[DPSoundFX]ERROR - file " + name + ".* not found!");
+				if (!GameDatabase.Instance.ExistsAudioClip (filename)) {
+					printToLog ("[DPSoundFX]ERROR - file " + filename + ".* not found!", 3);
 					return false;
 				}
 				group.audio = gameObject.AddComponent<AudioSource> ();
@@ -34,7 +34,7 @@ namespace DockingSounds
 				group.audio.dopplerLevel = 0f;
 				//group.audio.panLevel = 1f; Depreciated so we add 'spatialBlend' below
 				group.audio.spatialBlend = 1f;
-				group.audio.clip = GameDatabase.Instance.GetAudioClip (name);
+				group.audio.clip = GameDatabase.Instance.GetAudioClip (filename);
 				group.audio.loop = loop;
 				group.audio.playOnAwake = false;             
 				return true;
@@ -45,11 +45,14 @@ namespace DockingSounds
 		// Play docking sound
 		public void DPFXdock (GameEvents.FromToAction<Part, Part> partAction)
 		{
-			//Debug.Log ("[DPSoundFX] Docking");
-			//Debug.Log ("               Docked FROM   : " + partAction.from.vessel.vesselName);
-			//Debug.Log ("               Docked TO     : " + partAction.to.vessel.vesselName);
-			//Debug.Log ("               Docked FROM ID: " + partAction.from.vessel.id.ToString ());
-			//Debug.Log ("               Docked TO ID  : " + partAction.to.vessel.id.ToString ());
+			printToLog ("[DPSoundFX] Docking\n               Docked FROM   : " + 
+			            partAction.from.vessel.vesselName + 
+			            "\n               Docked TO     : " + 
+			            partAction.to.vessel.vesselName + 
+			            "\n               Docked FROM ID: " + 
+			            partAction.from.vessel.id + 
+			            "\n               Docked TO ID  : " + 
+			            partAction.to.vessel.id, 1);
 			
 			if (internalSoundsOnly && CameraManager.Instance.currentCameraMode != CameraManager.CameraMode.IVA) {
 				if (FlightGlobals.getStaticPressure() <= 50.0)
@@ -63,13 +66,14 @@ namespace DockingSounds
 			if (Part.FromGO (gameObject).flightID != partAction.from.flightID)
 				return;
 			
-			if (!this.dockSound.audio.isPlaying) { 
-				this.dockSound.audio.volume = GameSettings.SHIP_VOLUME;
-				this.dockSound.audio.Play ();
+			if (!DockSound.audio.isPlaying) { 
+				DockSound.audio.volume = GameSettings.SHIP_VOLUME;
+				DockSound.audio.Play ();
+				printToLog ("[DPSoundFX] Starting Playback", 2);
 			}
 		}
 		
-		public void DPFXundock (Part part)
+		public void DPFXundock (Part dockingPortPart)
 		{
 			if (internalSoundsOnly && CameraManager.Instance.currentCameraMode != CameraManager.CameraMode.IVA) {
 				if (FlightGlobals.getStaticPressure() < 50.0)
@@ -77,41 +81,60 @@ namespace DockingSounds
 			}
 			
 			// Does the "caller" even have a DPSoundFX entry in it's config?  (KIS didn't seem to trigger this, but it might avoid a false trigger from elsewhere)
-			if (!part.Modules.Contains ("DPSoundFX"))
+			if (!dockingPortPart.Modules.Contains ("DPSoundFX"))
 				return;
 			
 			// Did the caller just undock?  If not go home caller, you're drunk.
-			if (Part.FromGO (gameObject).flightID != part.flightID)
+			if (Part.FromGO (gameObject).flightID != dockingPortPart.flightID)
 				return;
 			
-			if (!this.dockSound.audio.isPlaying) {
-				this.dockSound.audio.volume = GameSettings.SHIP_VOLUME;				
-				this.undockSound.audio.Play ();
+			if (!DockSound.audio.isPlaying) {
+				DockSound.audio.volume = GameSettings.SHIP_VOLUME;				
+				UndockSound.audio.Play ();
 			}
 		}
 		
 		public override void OnStart (PartModule.StartState state)
 		{
-			Debug.Log ("[DPSoundFX] OnStart Called: State was " + state);
+			printToLog ("[DPSoundFX] OnStart Called: State was " + state, 1);
 			
 			if (HighLogic.LoadedScene != GameScenes.FLIGHT)
 				return;
 			
 			base.OnStart (state);
 			
-			createGroup (dockSound, sound_docking, false);
-			createGroup (undockSound, sound_undocking, false);
+			CreateGroup (DockSound, sound_docking, false);
+			CreateGroup (UndockSound, sound_undocking, false);
 			
 			GameEvents.onPartCouple.Add (DPFXdock);
 			GameEvents.onPartUndock.Add (DPFXundock);
 			
-			Debug.Log ("[DPSoundFX] OnStart Executed: State was " + state);
+			printToLog ("[DPSoundFX] OnStart Executed: State was " + state, 1);
 		}
 		
 		void OnDestroy ()
 		{
 			GameEvents.onPartUndock.Remove (DPFXundock);
 			GameEvents.onPartCouple.Remove (DPFXdock);
+		}
+
+		void printToLog(string outText, int styleFlag) {
+#if DEBUG
+			switch (styleFlag) {
+			case 1:
+				Debug.Log (outText);
+				break;
+			case 2:
+				Debug.LogWarning (outText);
+				break;
+			case 3:
+				Debug.LogError (outText);
+				break;
+			default:
+				Debug.LogError ("[DPCamera] Improper call to internal logger.");
+				break;
+			}
+#endif
 		}
 	}
 }
