@@ -1,4 +1,4 @@
-# DPSoundFX
+# Docking-Sounds (DPSoundFX)
 ## Synopsis
 
 Adds docking and undocking sound effects to stock docking ports in Kerbal Space Program(tm).  
