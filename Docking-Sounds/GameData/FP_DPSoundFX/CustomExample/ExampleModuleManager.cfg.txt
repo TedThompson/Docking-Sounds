@@ -1,0 +1,17 @@
+//This is just an example
+// to make a real custom file, copy the text below into your own file
+// change "someDockingPort" to the name of the port you want to apply the
+// sounds to, and change "CustomExample/crash" and "CustomExample/radio"
+// to the folder/filename you are using.  NOTE: DO NOT add .wav or .ogg 
+// to the file name
+
+@PART[someDockingPort]:NEEDS[FP_DPSoundFX]
+{
+	MODULE
+	{
+		name = DPSoundFX
+		sound_docking = CustomExample/crash
+		sound_undocking = CustomExample/radio
+		internalSoundsOnly = false		
+	}
+}
