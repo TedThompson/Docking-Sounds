@@ -5,7 +5,7 @@
 // Created: June 19, 2015
 //*******************************
 using UnityEngine;
-using System.Linq;
+using System;
 
 namespace DockingSounds
 {
@@ -27,7 +27,7 @@ namespace DockingSounds
             {
                 if (!GameDatabase.Instance.ExistsAudioClip(filename))
                 {
-                    printToLog("[DPSoundFX]ERROR - file " + filename + ".* not found!", 3);
+                    PrintToLog("[DPSoundFX]ERROR - file " + filename + ".* not found!", 3);
                     return false;
                 }
                 group.audio = gameObject.AddComponent<AudioSource>();
@@ -47,7 +47,7 @@ namespace DockingSounds
         // Play docking sound
         public void DPFXdock(GameEvents.FromToAction<Part, Part> partAction)
         {
-            printToLog("[DPSoundFX] Docking\n               Docked FROM   : " +
+            PrintToLog("[DPSoundFX] Docking\n               Docked FROM   : " +
                         partAction.from.vessel.vesselName +
                         "\n               Docked TO     : " +
                         partAction.to.vessel.vesselName +
@@ -73,7 +73,7 @@ namespace DockingSounds
             {
                 DockSound.audio.volume = GameSettings.SHIP_VOLUME;
                 DockSound.audio.Play();
-                printToLog("[DPSoundFX] Starting Playback", 2);
+                PrintToLog("[DPSoundFX] Starting Playback, DOCKING", 1);
             }
         }
 
@@ -93,38 +93,48 @@ namespace DockingSounds
             if (Part.FromGO(gameObject).flightID != dockingPortPart.flightID)
                 return;
 
-            if (!DockSound.audio.isPlaying)
+            if (!UndockSound.audio.isPlaying)
             {
-                DockSound.audio.volume = GameSettings.SHIP_VOLUME;
+                UndockSound.audio.volume = GameSettings.SHIP_VOLUME;
                 UndockSound.audio.Play();
+                PrintToLog("[DPSoundFX] Starting Playback, UNDOCKING", 1);
             }
         }
 
         public override void OnStart(PartModule.StartState state)
         {
-            printToLog("[DPSoundFX] OnStart Called: State was " + state, 1);
+            try
+            {
+                if (state == StartState.Editor || state == StartState.None) return;
 
-            if (HighLogic.LoadedScene != GameScenes.FLIGHT)
-                return;
+                PrintToLog("[DPSoundFX] OnStart Called: State was " + state, 1);
 
-            base.OnStart(state);
+                if (HighLogic.LoadedScene != GameScenes.FLIGHT)
+                    return;
 
-            CreateGroup(DockSound, sound_docking, false);
-            CreateGroup(UndockSound, sound_undocking, false);
+                base.OnStart(state);
 
-            GameEvents.onPartCouple.Add(DPFXdock);
-            GameEvents.onPartUndock.Add(DPFXundock);
+                CreateGroup(DockSound, sound_docking, false);
+                CreateGroup(UndockSound, sound_undocking, false);
 
-            printToLog("[DPSoundFX] OnStart Executed: State was " + state, 1);
+                GameEvents.onPartCouple.Add(DPFXdock);
+                GameEvents.onPartUndock.Add(DPFXundock);
+            }
+
+            catch (Exception ex)
+            {
+                Debug.LogError("[DPSoundFX] OnStart: " + ex.Message);
+            }
         }
 
         void OnDestroy()
         {
-            GameEvents.onPartUndock.Remove(DPFXundock);
+            PrintToLog("[DPSoundFX] OnDestroy()! (KaBOOM?)", 1);
             GameEvents.onPartCouple.Remove(DPFXdock);
+            GameEvents.onPartUndock.Remove(DPFXundock);
         }
 
-        void printToLog(string outText, int styleFlag)
+        void PrintToLog(string outText, int styleFlag)
         {
 #if DEBUG
             switch (styleFlag)
@@ -139,7 +149,7 @@ namespace DockingSounds
                     Debug.LogError(outText);
                     break;
                 default:
-                    Debug.LogError("[DPCamera] Improper call to internal logger.");
+                    Debug.LogError("[DPSoundFX] Improper call to internal logger.");
                     break;
             }
 #endif
