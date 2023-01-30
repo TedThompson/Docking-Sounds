@@ -119,6 +119,7 @@ namespace DockingSounds
 
                 GameEvents.onPartCouple.Add(DPFXdock);
                 GameEvents.onPartUndock.Add(DPFXundock);
+                GameEvents.onPartDeCouple.Add(DPFXundock);
             }
 
             catch (Exception ex)
@@ -132,6 +133,7 @@ namespace DockingSounds
             PrintToLog("[DPSoundFX] OnDestroy()! (KaBOOM?)", 1);
             GameEvents.onPartCouple.Remove(DPFXdock);
             GameEvents.onPartUndock.Remove(DPFXundock);
+            GameEvents.onPartDeCouple.Remove(DPFXundock);
         }
 
         void PrintToLog(string outText, int styleFlag)
